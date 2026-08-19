@@ -1,32 +1,58 @@
 let currentMode = 'simple';
 let laundrySessions = [];
+let currentLang = 'pl';
+let i18nData = {};
 
-const poopQuotes = [
-    "„Gdy kupa w nosie gnieździ, sraczka po jelitach jeździ.”",
-    "„Sraczka nie wybiera – dopadnie nawet bohatera.”",
-    "„Lepszy wróg w progu niż kupa w nogawce.”",
-    "„Nie odkładaj na jutro tego, co możesz zesrać dzisiaj.”",
-    "„Kto z rana sra na całe gardło, temu w dzień nic nie pobrakło.”",
-    "„Czasem człowiek myśli, że to tylko bąk... i wtedy zaczyna się tragedia.”",
-    "„Prawdziwego przyjaciela poznaje się po tym, że pożyczy rolkę papieru.”",
-    "„Gdy żołądek głośno gra, wiedz że zaraz będzie sra.”",
-    "„Trzeba brać życie za rogi, a dupę trzymać z dala od podłogi.”",
-    "„Przezorny zawsze spakowany, zwłaszcza gdy obiad był niepewny.”",
-    "„Lepiej głośno pierdnąć w tłumie, niż cicho zesrać się w samotności.”",
-    "„Sraczka jest jak niespodziewana wizyta teściowej – wchodzi bez pukania.”",
-    "„Gdy w brzuchu burza świszcze, papier toaletowy jest Twoim ojczystym dziedzictwem.”",
-    "„Życie jest jak papier toaletowy – długie, szare i w pewnym momencie się kończy.”",
-    "„Świat należy do tych, co zdążyli do łazienki.”",
-    "„Gdy zjesz kebab u araba, w nocy będzie straszna draka.”",
-    "„Porażka boli, ale zesranie się w miejscowym autobusie boli bardziej.”",
-    "„Bądź jak tygrys – skacz szybko, gdy poczujesz ucisk.”",
-    "„Gdzie diabeł nie może, tam sraczkę pośle.”",
-    "„Pamiętaj chemiku młody: nigdy nie ufaj pierdnięciu po ostrej potrawie.”"
-];
+// Ładowanie plików językowych i zmiana tłumaczenia
+async function loadLanguage(lang) {
+    try {
+        const res = await fetch(`lang/${lang}.json`);
+        i18nData = await res.json();
+        currentLang = lang;
+        
+        document.documentElement.lang = lang;
+        document.getElementById('btn-lang-pl').classList.toggle('active', lang === 'pl');
+        document.getElementById('btn-lang-en').classList.toggle('active', lang === 'en');
+        
+        applyTranslations();
+        renderDays();
+        drawQuote();
+    } catch (err) {
+        console.error("Błąd podczas ładowania języka:", err);
+    }
+}
+
+function changeLanguage(lang) {
+    if (lang !== currentLang) {
+        loadLanguage(lang);
+    }
+}
+
+function applyTranslations() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18nData[key]) {
+            el.innerText = i18nData[key];
+        }
+    });
+
+    updateActiveModulesCount();
+}
+
+function getTranslation(key, params = {}) {
+    let text = key.split('.').reduce((o, i) => (o ? o[i] : null), i18nData) || key;
+    Object.keys(params).forEach(p => {
+        text = text.replace(`{${p}}`, params[p]);
+    });
+    return text;
+}
 
 function drawQuote() {
-    const randomIndex = Math.floor(Math.random() * poopQuotes.length);
-    document.getElementById('quoteText').innerText = poopQuotes[randomIndex];
+    const quotes = i18nData.quotes || [];
+    if (quotes.length > 0) {
+        const randomIndex = Math.floor(Math.random() * quotes.length);
+        document.getElementById('quoteText').innerText = quotes[randomIndex];
+    }
 }
 
 const underwearTypes = {
@@ -38,24 +64,24 @@ const underwearTypes = {
     longs: `<svg class="underwear-icon-sm" viewBox="0 0 100 100"><path d="M25 25 L 75 25 L 72 88 L 53 88 L 50 55 L 47 88 L 28 88 Z" fill="currentColor"/></svg>`
 };
 
-const defaultMealTypes = [
-    { id: 'm1', name: 'Śniadanie', styleName: 'Slipki Bawełniane', icon: underwearTypes.slips, defaultHour: 8, defaultRisk: '0.33', simpleActive: true },
-    { id: 'm2', name: 'II Śniadanie', styleName: 'Figi Codzienne', icon: underwearTypes.classic, defaultHour: 11, defaultRisk: '0.33', simpleActive: true },
-    { id: 'm3', name: 'Obiad / Posiłek', styleName: 'Bokserki Bojowe', icon: underwearTypes.boxers, defaultHour: 14, defaultRisk: '0.33', simpleActive: true },
-    { id: 'm4', name: 'Podwieczorek', styleName: 'Majtki Sportowe', icon: underwearTypes.briefs, defaultHour: 17, defaultRisk: '0.15', simpleActive: false },
-    { id: 'm5', name: 'Kolacja', styleName: 'Bielizna Elegancka', icon: underwearTypes.longs, defaultHour: 20, defaultRisk: '0.33', simpleActive: true },
-    { id: 'm6', name: 'Street Food / Impreza', styleName: 'Stringi Ryzyka', icon: underwearTypes.thong, defaultHour: 23, defaultRisk: '0.60', simpleActive: false }
+const mealKeys = [
+    { id: 'm1', icon: underwearTypes.slips, defaultHour: 8, defaultRisk: '0.33', simpleActive: true },
+    { id: 'm2', icon: underwearTypes.classic, defaultHour: 11, defaultRisk: '0.33', simpleActive: true },
+    { id: 'm3', icon: underwearTypes.boxers, defaultHour: 14, defaultRisk: '0.33', simpleActive: true },
+    { id: 'm4', icon: underwearTypes.briefs, defaultHour: 17, defaultRisk: '0.15', simpleActive: false },
+    { id: 'm5', icon: underwearTypes.longs, defaultHour: 20, defaultRisk: '0.33', simpleActive: true },
+    { id: 'm6', icon: underwearTypes.thong, defaultHour: 23, defaultRisk: '0.60', simpleActive: false }
 ];
 
-const riskOptions = [
-    { val: '0.00', label: '0% - Brak (Sterylnie)' },
-    { val: '0.05', label: '5% - B. Niskie (Hotel 5*)' },
-    { val: '0.10', label: '10% - Niskie (Sprawdzony lokal)' },
-    { val: '0.25', label: '25% - Średnie (Standard)' },
-    { val: '0.33', label: '33% - Standard Sraczkowości' },
-    { val: '0.50', label: '50% - Wysokie (Street Food)' },
-    { val: '0.75', label: '75% - Bardzo Wysokie (Surowe)' },
-    { val: '0.95', label: '95% - Ruletka (Kranówka)' }
+const riskKeys = [
+    { val: '0.00', key: 'r00' },
+    { val: '0.05', key: 'r05' },
+    { val: '0.10', key: 'r10' },
+    { val: '0.25', key: 'r25' },
+    { val: '0.33', key: 'r33' },
+    { val: '0.50', key: 'r50' },
+    { val: '0.75', key: 'r75' },
+    { val: '0.95', key: 'r95' }
 ];
 
 function toggleSpecialModule(modId) {
@@ -104,15 +130,19 @@ function setMode(mode) {
 function renderDays() {
     const totalDays = parseInt(document.getElementById('totalDays').value) || 1;
     const daysList = document.getElementById('daysList');
+    if (!daysList) return;
     daysList.innerHTML = '';
 
     for (let d = 1; d <= totalDays; d++) {
         const dayCard = document.createElement('div');
         dayCard.className = 'day-card';
 
-        let tableRows = defaultMealTypes.map(m => {
-            const optionsHtml = riskOptions.map(r =>
-                `<option value="${r.val}" ${r.val === m.defaultRisk ? 'selected' : ''}>${r.label}</option>`
+        let tableRows = mealKeys.map(m => {
+            const mealName = getTranslation(`meals.${m.id}.name`);
+            const styleName = getTranslation(`meals.${m.id}.styleName`);
+
+            const optionsHtml = riskKeys.map(r =>
+                `<option value="${r.val}" ${r.val === m.defaultRisk ? 'selected' : ''}>${getTranslation(`risks.${r.key}`)}</option>`
             ).join('');
 
             return `
@@ -126,8 +156,8 @@ function renderDays() {
                                 ${m.icon}
                             </span>
                             <div>
-                                <div><strong>${m.name}</strong></div>
-                                <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 500;">${m.styleName}</div>
+                                <div><strong>${mealName}</strong></div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 500;">${styleName}</div>
                             </div>
                         </div>
                     </td>
@@ -145,17 +175,17 @@ function renderDays() {
 
         dayCard.innerHTML = `
             <div class="day-header">
-                <span>DZIEŃ ${d}</span>
+                <span>${getTranslation('dayTitle', { d })}</span>
                 <span id="status_d${d}" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);"></span>
             </div>
             <div class="table-wrapper">
                 <table class="meals-table">
                     <thead>
                         <tr>
-                            <th style="width: 40px; text-align: center;">Jem?</th>
-                            <th>Posiłek i Typ Majtek</th>
-                            <th style="width: 90px;">Godzina</th>
-                            <th style="width: 220px;">Poziom Ryzyka</th>
+                            <th style="width: 40px; text-align: center;">${getTranslation('thEat')}</th>
+                            <th>${getTranslation('thMealType')}</th>
+                            <th style="width: 90px;">${getTranslation('thHour')}</th>
+                            <th style="width: 220px;">${getTranslation('thRisk')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -208,24 +238,24 @@ function renderLaundrySessions() {
     laundrySessions.forEach((session, index) => {
         let optionsHtml = '';
         for (let d = 1; d <= totalDays; d++) {
-            optionsHtml += `<option value="${d}" ${d === session.day ? 'selected' : ''}>Dzień ${d}</option>`;
+            optionsHtml += `<option value="${d}" ${d === session.day ? 'selected' : ''}>${getTranslation('dayTitle', { d })}</option>`;
         }
 
         const sessionRow = document.createElement('div');
         sessionRow.className = 'laundry-session-row';
         sessionRow.innerHTML = `
             <div class="input-group" style="width: 120px;">
-                <label>Pranie #${index + 1}:</label>
+                <label>${getTranslation('laundrySession', { num: index + 1 })}</label>
                 <select onchange="updateLaundrySession(${session.id}, 'day', this.value)">
                     ${optionsHtml}
                 </select>
             </div>
             <div class="input-group" style="width: 80px;">
-                <label>Pary:</label>
+                <label>${getTranslation('laundryPairs')}</label>
                 <input type="number" min="1" max="30" value="${session.count}" id="laundry_count_${session.id}" oninput="updateLaundrySession(${session.id}, 'count', this.value)">
             </div>
             <div class="laundry-available-info" id="laundry_info_${session.id}" style="font-size:0.8rem; color:var(--text-muted); flex: 1;">
-                Dostępne: <strong>0</strong> par
+                ${getTranslation('laundryAvailable', { val: 0 })}
             </div>
             <button type="button" class="remove-laundry-btn" onclick="removeLaundrySession(${session.id})">✕</button>
         `;
@@ -249,29 +279,6 @@ function getFiberAlcoholMultiplier() {
     return 1 + alcVal + fiberVal;
 }
 
-function updateDeficitIndicator(totalPairs, basePairs, emergencyPairs) {
-    const indicatorEl = document.getElementById('safetyIndicatorBar');
-    const labelEl = document.getElementById('safetyIndicatorLabel');
-    if (!indicatorEl || !labelEl) return;
-
-    const minRequired = basePairs + emergencyPairs;
-    const safetyRatio = totalPairs / (minRequired || 1);
-    const percentage = Math.min(Math.round(safetyRatio * 100), 100);
-
-    indicatorEl.style.width = `${percentage}%`;
-
-    if (percentage >= 100) {
-        indicatorEl.style.backgroundColor = '#4B7B4E';
-        labelEl.innerText = `Poziom Bezpieczeństwa: ${percentage}% (Pancerny Zapas)`;
-    } else if (percentage >= 70) {
-        indicatorEl.style.backgroundColor = '#D9662B';
-        labelEl.innerText = `Poziom Bezpieczeństwa: ${percentage}% (Uwaga na dokładki)`;
-    } else {
-        indicatorEl.style.backgroundColor = '#B33A2E';
-        labelEl.innerText = `Poziom Bezpieczeństwa: ${percentage}% (Kroczysz po cienkim lodzie!)`;
-    }
-}
-
 function generatePDF() {
     const totalPairs = document.getElementById('resTotal')?.innerText || '0';
     const basePairs = document.getElementById('resBase')?.innerText || '0';
@@ -282,27 +289,27 @@ function generatePDF() {
     element.style.padding = '20px';
     element.style.fontFamily = 'sans-serif';
     element.innerHTML = `
-        <h2 style="color: #1A1611;">📋 Taktyczna Lista Pakowania Bielizny</h2>
+        <h2 style="color: #1A1611;">${getTranslation('pdf.title')}</h2>
         <hr style="margin: 10px 0;">
-        <p style="font-size: 1.2rem;"><strong>Suma do spakowania: ${totalPairs} par(y)</strong></p>
+        <p style="font-size: 1.2rem;"><strong>${getTranslation('pdf.total', { val: totalPairs })}</strong></p>
         <ul style="margin: 15px 0; padding-left: 20px;">
-            <li>Bielizna Podstawowa (Rutynowa): <strong>${basePairs} par</strong></li>
-            <li>Rezerwa Taktyczna (Sraczkowość): <strong>${emergencyPairs} par</strong></li>
-            <li>Zapas Buforowy i Bezpieczeństwa: <strong>${bufferPairs} par</strong></li>
+            <li>${getTranslation('pdf.base', { val: basePairs })}</li>
+            <li>${getTranslation('pdf.emergency', { val: emergencyPairs })}</li>
+            <li>${getTranslation('pdf.buffer', { val: bufferPairs })}</li>
         </ul>
         <hr style="margin: 10px 0;">
-        <h3>Ekwipunek Asekuracyjny:</h3>
-        <p><input type="checkbox"> Rolka papieru toaletowego (Asekuracja)</p>
-        <p><input type="checkbox"> Stoperan / Węgiel aktywny / Elektrolity</p>
-        <p><input type="checkbox"> Mydło do prania w płynie / Proszek</p>
+        <h3>${getTranslation('pdf.equipment')}</h3>
+        <p><input type="checkbox"> ${getTranslation('pdf.item1')}</p>
+        <p><input type="checkbox"> ${getTranslation('pdf.item2')}</p>
+        <p><input type="checkbox"> ${getTranslation('pdf.item3')}</p>
         <br>
-        <p style="font-size: 0.8rem; color: #666;">Wygenerowano z Kalkulatora Sraczkowości</p>
+        <p style="font-size: 0.8rem; color: #666;">${getTranslation('pdf.footer')}</p>
     `;
 
     if (typeof html2pdf !== 'undefined') {
         html2pdf().from(element).save('lista_pakowania_bielizny.pdf');
     } else {
-        alert("Błąd: Biblioteka html2pdf.js nie została załadowana!");
+        alert(getTranslation('pdf.error'));
     }
 }
 
@@ -322,9 +329,9 @@ function buildRiskFormula(riskList) {
 }
 
 function oblicz() {
-    const totalDays = parseInt(document.getElementById('totalDays').value) || 1;
-    const startHour = parseInt(document.getElementById('startHour').value);
-    const endHour = parseInt(document.getElementById('endHour').value);
+    const totalDays = parseInt(document.getElementById('totalDays')?.value) || 1;
+    const startHour = parseInt(document.getElementById('startHour')?.value);
+    const endHour = parseInt(document.getElementById('endHour')?.value);
 
     const globalMultiplier = getFiberAlcoholMultiplier();
 
@@ -335,7 +342,7 @@ function oblicz() {
     for (let d = 1; d <= totalDays; d++) {
         let activeMealsInDay = 0;
 
-        defaultMealTypes.forEach(m => {
+        mealKeys.forEach(m => {
             let isActive = false;
             let mealTime = m.defaultHour;
             let mealRisk = parseFloat(m.defaultRisk);
@@ -372,7 +379,7 @@ function oblicz() {
         });
 
         const statusEl = document.getElementById(`status_d${d}`);
-        if (statusEl) statusEl.innerText = `Posiłki: ${activeMealsInDay}`;
+        if (statusEl) statusEl.innerText = getTranslation('mealsCount', { count: activeMealsInDay });
     }
 
     // --- MODUŁY SPECJALNE ---
@@ -416,7 +423,7 @@ function oblicz() {
             
             const infoEl = document.getElementById(`laundry_info_${session.id}`);
             if (infoEl) {
-                infoEl.innerHTML = `Dostępne: <strong>${maxAvailableToWash}</strong> par`;
+                infoEl.innerHTML = getTranslation('laundryAvailable', { val: maxAvailableToWash });
             }
 
             let effectiveWash = Math.min(session.count, maxAvailableToWash);
@@ -441,7 +448,7 @@ function oblicz() {
     if (warningEl) {
         if (isRadiuszActive && laundryWarningTriggered) {
             warningEl.style.display = 'block';
-            warningEl.innerText = `⚠️ Propozycja prania została skorygowana do faktycznie dostępnej brudnej bielizny.`;
+            warningEl.innerText = getTranslation('laundryWarningText');
         } else {
             warningEl.style.display = 'none';
         }
@@ -452,50 +459,56 @@ function oblicz() {
     document.getElementById('resBuffer').innerText = bufferPairs;
     document.getElementById('resEmergency').innerText = emergencyPairs;
 
+    const lineResBase = document.getElementById('lineResBase');
+    if (lineResBase) lineResBase.innerHTML = `${getTranslation('resBase', { val: `<strong id="resBase">${basePairs}</strong>` })}`;
+
+    const lineResBuffer = document.getElementById('lineResBuffer');
+    if (lineResBuffer) lineResBuffer.innerHTML = `${getTranslation('resBuffer', { val: `<strong id="resBuffer">${bufferPairs}</strong>` })}`;
+
+    const lineResEmergency = document.getElementById('lineResEmergency');
+    if (lineResEmergency) lineResEmergency.innerHTML = `${getTranslation('resEmergency', { val: `<strong id="resEmergency">${emergencyPairs}</strong>` })}`;
+
     const livesLine = document.getElementById('resLivesLine');
-    const livesValue = document.getElementById('resLives');
-    if (livesLine && livesValue) {
+    if (livesLine) {
         livesLine.style.display = isLivesActive ? 'inline' : 'none';
-        livesValue.innerText = `${livesPerPair} Życia/Parę`;
+        livesLine.innerHTML = getTranslation('resLives', { val: `<strong>${livesPerPair}</strong>` });
     }
 
     const heatLine = document.getElementById('resHeatLine');
-    const heatValue = document.getElementById('resHeat');
-    if (heatLine && heatValue) {
+    if (heatLine) {
         heatLine.style.display = isHeatActive ? 'inline' : 'none';
-        heatValue.innerText = `+${Math.ceil(totalDays / livesPerPair)}`;
+        heatLine.innerHTML = getTranslation('resHeat', { val: `<strong>+${Math.ceil(totalDays / livesPerPair)}</strong>` });
     }
 
     const laundryLine = document.getElementById('resLaundryLine');
-    const laundryValue = document.getElementById('resLaundry');
-    if (laundryLine && laundryValue) {
+    if (laundryLine) {
         laundryLine.style.display = isRadiuszActive ? 'inline' : 'none';
-        laundryValue.innerText = `−${appliedReduction}`;
+        laundryLine.innerHTML = getTranslation('resLaundry', { val: `<strong>−${appliedReduction}</strong>` });
     }
 
     const emergencyCard = document.getElementById('emergencyFormulaCard');
     if (emergencyCard) {
         const riskFormula = buildRiskFormula(riskList);
         emergencyCard.innerHTML = `
-            <span class="formula-title">📐 Wzór Rezerwy Awaryjnej</span>
-            <span class="formula-line">ceil( Σ Posiłki<sub>ryzyko</sub> × Mnożnik Modyfikatorów )</span>
-            Mnożnik diety/alkoholu: <strong>${globalMultiplier.toFixed(2)}x</strong><br>
-            Aktywne posiłki: <strong>${totalActiveMeals}</strong><br>
-            Suma oczekiwanych awarii: <strong>${riskFormula} = ${totalExpectedFailures.toFixed(2)}</strong><br>
-            <span class="formula-line">Rezerwa: ${totalExpectedFailures.toFixed(2)} awarii → ${emergencyPairs} par(y)</span>
+            <span class="formula-title">${getTranslation('formulas.emergencyTitle')}</span>
+            <span class="formula-line">${getTranslation('formulas.emergencyFormula')}</span>
+            ${getTranslation('formulas.mult')} <strong>${globalMultiplier.toFixed(2)}x</strong><br>
+            ${getTranslation('formulas.activeMeals')} <strong>${totalActiveMeals}</strong><br>
+            ${getTranslation('formulas.sumFailures')} <strong>${riskFormula} = ${totalExpectedFailures.toFixed(2)}</strong><br>
+            <span class="formula-line">${getTranslation('formulas.reserve')} ${totalExpectedFailures.toFixed(2)} → ${emergencyPairs}</span>
         `;
     }
 
     const totalCard = document.getElementById('totalFormulaCard');
     if (totalCard) {
         totalCard.innerHTML = `
-            <span class="formula-title">📐 Podsumowanie Modelu Skalowanego</span>
-            <span class="formula-line">Suma: ${totalLivesNeeded} żyć / ${livesPerPair} = ${rawTotal} par</span>
-            Podstawa rutynowa: <strong>${basePairs} par</strong><br>
-            Zapas buforowy: <strong>${bufferPairs} par</strong><br>
-            Awarie (Sraczkowość): <strong>+${emergencyPairs} par</strong><br>
-            ${isRadiuszActive ? `Pranie (Radiusz): <strong>−${appliedReduction} par</strong><br>` : ''}
-            <span class="formula-line">Suma do spakowania: ${total} par(y)</span>
+            <span class="formula-title">${getTranslation('formulas.totalTitle')}</span>
+            <span class="formula-line">${getTranslation('formulas.totalFormula', { lives: totalLivesNeeded, perPair: livesPerPair, raw: rawTotal })}</span>
+            ${getTranslation('formulas.base')} <strong>${basePairs}</strong><br>
+            ${getTranslation('formulas.buffer')} <strong>${bufferPairs}</strong><br>
+            ${getTranslation('formulas.emergency')} <strong>+${emergencyPairs}</strong><br>
+            ${isRadiuszActive ? `${getTranslation('formulas.laundry')} <strong>−${appliedReduction}</strong><br>` : ''}
+            <span class="formula-line">${getTranslation('formulas.finalTotal')} ${total}</span>
         `;
     }
 
@@ -509,10 +522,7 @@ function oblicz() {
             mainSvgPath.setAttribute('fill', '#F2C230');
         }
     }
-
-    updateDeficitIndicator(total, basePairs, emergencyPairs);
 }
 
-renderDays();
-setMode('simple');
-drawQuote();
+// Inicjalizacja
+loadLanguage('pl');

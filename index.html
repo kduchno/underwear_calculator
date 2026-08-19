@@ -3,76 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Sraczkowości i Pakowania Bielizny</title>
+    <title data-i18n="title">Kalkulator Sraczkowości i Pakowania Bielizny</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Biblioteka do generowania PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
     <div class="container">
+        <!-- Pasek wyboru języka na samej górze -->
+        <div class="lang-selector-top">
+            <button class="lang-btn active" id="btn-lang-pl" onclick="changeLanguage('pl')">🇵🇱 PL</button>
+            <button class="lang-btn" id="btn-lang-en" onclick="changeLanguage('en')">🇬🇧 EN</button>
+        </div>
+
         <header>
-            <h1>💩 Taktyczny Kalkulator Bielizny</h1>
-            <p class="subtitle">Wskaźnik Sraczkowości i Dobrego Samopoczucia w Podróży</p>
+            <h1 data-i18n="appTitle">💩 Taktyczny Kalkulator Bielizny</h1>
+            <p class="subtitle" data-i18n="subtitle">Wskaźnik Sraczkowości i Dobrego Samopoczucia w Podróży</p>
         </header>
 
         <!-- Cytat dnia -->
         <div class="quote-box">
             <span id="quoteText">„Nie odkładaj na jutro tego, co możesz zesrać dzisiaj.”</span>
-            <button class="btn-refresh" onclick="drawQuote()">🎲 Losuj cytat</button>
+            <button class="btn-refresh" onclick="drawQuote()" data-i18n="drawQuote">🎲 Losuj cytat</button>
         </div>
 
         <!-- Przełącznik trybów -->
         <div class="mode-selector">
-            <button id="btnSimple" class="mode-btn active" onclick="setMode('simple')">⚡ Tryb Prosty</button>
-            <button id="btnAdvanced" class="mode-btn" onclick="setMode('advanced')">🛠️ Tryb Zaawansowany</button>
+            <button id="btnSimple" class="mode-btn active" onclick="setMode('simple')" data-i18n="btnSimple">⚡ Tryb Prosty</button>
+            <button id="btnAdvanced" class="mode-btn" onclick="setMode('advanced')" data-i18n="btnAdvanced">🛠️ Tryb Zaawansowany</button>
         </div>
 
         <!-- Główne Parametry Wyjazdu -->
         <div class="card">
-            <h3>📅 Parametry Wyjazdu</h3>
+            <h3 data-i18n="tripParams">📅 Parametry Wyjazdu</h3>
             <div class="grid-form">
                 <div class="input-group">
-                    <label for="totalDays">Liczba Dni Wyjazdu:</label>
+                    <label for="totalDays" data-i18n="totalDays">Liczba Dni Wyjazdu:</label>
                     <input type="number" id="totalDays" value="3" min="1" max="30" onchange="renderDays()">
                 </div>
                 <div class="input-group">
-                    <label for="startHour">Godzina Wyjazdu (Dzień 1):</label>
+                    <label for="startHour" data-i18n="startHour">Godzina Wyjazdu (Dzień 1):</label>
                     <input type="number" id="startHour" value="8" min="0" max="23" onchange="oblicz()">
                 </div>
                 <div class="input-group">
-                    <label for="endHour">Godzina Powrotu (Ostatni Dzień):</label>
+                    <label for="endHour" data-i18n="endHour">Godzina Powrotu (Ostatni Dzień):</label>
                     <input type="number" id="endHour" value="20" min="0" max="23" onchange="oblicz()">
                 </div>
             </div>
         </div>
 
-        <!-- NOWY MODUŁ: Błonnik i Alkohol -->
+        <!-- MODUŁ: Błonnik i Alkohol -->
         <div class="card highlight-card">
-            <h3>🌶️ Moduł Modyfikatorów Diety i Imprez</h3>
+            <h3 data-i18n="dietModule">🌶️ Moduł Modyfikatorów Diety i Imprez</h3>
             <div class="grid-form">
                 <div class="input-group">
-                    <label for="globalAlcohol">Spożycie Alkoholu / Imprezy:</label>
+                    <label for="globalAlcohol" data-i18n="globalAlcohol">Spożycie Alkoholu / Imprezy:</label>
                     <select id="globalAlcohol" onchange="oblicz()">
-                        <option value="0.0">Brak (Abstynencja)</option>
-                        <option value="0.15">Lekkie (1-2 Prowizoryczne Piwa)</option>
-                        <option value="0.35">Średnie (Drinki / Pasteryzacja)</option>
-                        <option value="0.60">Ciężkie (Ostre Imprezowanie + Kebab)</option>
+                        <option value="0.0" data-i18n="alcNone">Brak (Abstynencja)</option>
+                        <option value="0.15" data-i18n="alcLight">Lekkie (1-2 Prowizoryczne Piwa)</option>
+                        <option value="0.35" data-i18n="alcMedium">Średnie (Drinki / Pasteryzacja)</option>
+                        <option value="0.60" data-i18n="alcHeavy">Ciężkie (Ostre Imprezowanie + Kebab)</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label for="globalFiber">Błonnik / Ostry Kebab / Stres:</label>
+                    <label for="globalFiber" data-i18n="globalFiber">Błonnik / Ostry Kebab / Stres:</label>
                     <select id="globalFiber" onchange="oblicz()">
-                        <option value="0.0">Łagodnie (Dieta lekkostrawna)</option>
-                        <option value="0.20">Standard (Kuchnia regionalna)</option>
-                        <option value="0.40">Ostre (Piekielny SOS / Ostry Kebab)</option>
-                        <option value="0.70">Ekstremalne (Jelito Drażliwe Podróżnika)</option>
+                        <option value="0.0" data-i18n="fiberMild">Łagodnie (Dieta lekkostrawna)</option>
+                        <option value="0.20" data-i18n="fiberStandard">Standard (Kuchnia regionalna)</option>
+                        <option value="0.40" data-i18n="fiberSpicy">Ostre (Piekielny SOS / Ostry Kebab)</option>
+                        <option value="0.70" data-i18n="fiberExtreme">Ekstremalne (Jelito Drażliwe Podróżnika)</option>
                     </select>
                 </div>
             </div>
         </div>
 
         <!-- Informacja dla trybu prostego -->
-        <div id="simpleInfo" class="info-box">
+        <div id="simpleInfo" class="info-box" data-i18n="simpleInfo">
             ℹ️ W trybie prostym zakłada się 4 standardowe posiłki dziennie z domyślnym Ryzykiem Sraczkowości = 0.33.
         </div>
 
@@ -81,84 +87,82 @@
 
         <!-- Moduły Specjalne -->
         <div class="card">
-            <h3>🧩 Moduły Specjalne (Licznik Aktywnych: <span id="activeModulesCount">0</span>)</h3>
+            <h3>
+                <span data-i18n="specialModules">🧩 Moduły Specjalne</span> 
+                (<span data-i18n="activeCount">Licznik Aktywnych</span>: <span id="activeModulesCount">0</span>)
+            </h3>
             <div class="modules-toggle-list">
                 <label class="checkbox-label">
                     <input type="checkbox" id="modRadiuszActive" onchange="toggleSpecialModule('radiusz')">
-                    <strong>Moduł Prania (Radiusz)</strong> – uwzględnia wypraną bieliznę w trakcie wyjazdu.
+                    <strong data-i18n="modRadiusz">Moduł Prania (Radiusz)</strong> – <span data-i18n="modRadiuszDesc">uwzględnia wypraną bieliznę w trakcie wyjazdu.</span>
                 </label>
                 <label class="checkbox-label">
                     <input type="checkbox" id="modLivesActive" onchange="toggleSpecialModule('lives')">
-                    <strong>Moduł Przeżywalności (Survival)</strong> – pozwala używać 1 pary przez kilkadziesiąt godzin.
+                    <strong data-i18n="modLives">Moduł Przeżywalności (Survival)</strong> – <span data-i18n="modLivesDesc">pozwala używać 1 pary przez kilkadziesiąt godzin.</span>
                 </label>
                 <label class="checkbox-label">
                     <input type="checkbox" id="modHeatActive" onchange="toggleSpecialModule('heat')">
-                    <strong>Moduł Upału / Wilgotności</strong> – wymusza 2 zmiany dziennie z powodu potu.
+                    <strong data-i18n="modHeat">Moduł Upału / Wilgotności</strong> – <span data-i18n="modHeatDesc">wymusza 2 zmiany dziennie z powodu potu.</span>
                 </label>
             </div>
 
             <!-- Panel Prania -->
             <div id="panel-radiusz" class="sub-panel" style="display: none;">
-                <h4>🧼 Konfiguracja Sesji Prania</h4>
+                <h4 data-i18n="panelLaundryTitle">🧼 Konfiguracja Sesji Prania</h4>
                 <div id="laundrySessionsContainer"></div>
-                <button type="button" class="btn-secondary" onclick="addLaundrySession()">+ Dodaj Sesję Prania</button>
+                <button type="button" class="btn-secondary" onclick="addLaundrySession()" data-i18n="btnAddLaundry">+ Dodaj Sesję Prania</button>
                 <div id="laundryWarning" class="alert-warning" style="display: none;"></div>
             </div>
 
             <!-- Panel Żyć -->
             <div id="panel-lives" class="sub-panel" style="display: none;">
-                <h4>🛡️ Parametry Przeżywalności Bielizny</h4>
+                <h4 data-i18n="panelLivesTitle">🛡️ Parametry Przeżywalności Bielizny</h4>
                 <div class="input-group">
-                    <label for="underwearLives">Ile „żyć” / użyć ma jedna para?</label>
+                    <label for="underwearLives" data-i18n="underwearLives">Ile „żyć” / użyć ma jedna para?</label>
                     <input type="number" id="underwearLives" value="2" min="1" max="5" onchange="oblicz()">
                 </div>
             </div>
         </div>
 
-        <!-- Wskaźnik Deficytu / Bezpieczeństwa -->
-        <div class="card">
-            <h3>🛡️ Stan Ekwipunku i Poziom Bezpieczeństwa</h3>
-            <div class="safety-bar-container">
-                <div id="safetyIndicatorBar" class="safety-bar" style="width: 100%;"></div>
-            </div>
-            <p id="safetyIndicatorLabel" class="safety-label">Poziom Bezpieczeństwa: 100%</p>
-        </div>
-
         <!-- Rynkowa Suma i Podsumowanie -->
         <div class="card result-card">
-            <h2>📦 Wynik Pakowania</h2>
+            <h2 data-i18n="resultHeader">📦 Wynik Pakowania</h2>
             <div class="main-result">
                 <svg id="mainUnderwearSvg" class="underwear-icon-lg" viewBox="0 0 100 100">
                     <path d="M15 30 C 35 28, 65 28, 85 30 C 80 55, 65 70, 58 72 L 42 72 C 35 70, 20 55, 15 30 Z" fill="#F2C230"/>
                 </svg>
                 <div class="result-display">
                     <span id="resTotal" class="total-number">0</span>
-                    <span class="total-unit">PAR BELIZNY</span>
+                    <span class="total-unit" data-i18n="totalUnit">PAR BIELIZNY</span>
                 </div>
             </div>
 
             <div class="result-breakdown">
-                <div>Podstawa: <strong id="resBase">0</strong> par</div>
-                <div>Bufor wyjazdowy: <strong id="resBuffer">0</strong> par</div>
-                <div>Awarie (Sraczkowość): <strong id="resEmergency">0</strong> par</div>
+                <div id="lineResBase">Podstawa: <strong id="resBase">0</strong> par</div>
+                <div id="lineResBuffer">Bufor wyjazdowy: <strong id="resBuffer">0</strong> par</div>
+                <div id="lineResEmergency">Awarie (Sraczkowość): <strong id="resEmergency">0</strong> par</div>
                 <div id="resLivesLine" style="display:none;">Życia: <strong id="resLives">1</strong></div>
                 <div id="resHeatLine" style="display:none;">Upał: <strong id="resHeat">+0</strong></div>
                 <div id="resLaundryLine" style="display:none;">Pranie: <strong id="resLaundry">−0</strong></div>
             </div>
 
             <div class="action-buttons">
-                <button class="btn-pdf" onclick="generatePDF()">📄 Pobierz Checklistę PDF</button>
+                <button class="btn-pdf" onclick="generatePDF()" data-i18n="btnPdf">📄 Pobierz Checklistę PDF</button>
             </div>
         </div>
 
         <!-- Rozwijane Karty Wzorów -->
-        <div class="card collapsible-card" id="emergencyFormulaCard">
-            <!-- Dynamiczny wzór rezerwy -->
-        </div>
+        <div class="card collapsible-card" id="emergencyFormulaCard"></div>
+        <div class="card collapsible-card" id="totalFormulaCard"></div>
 
-        <div class="card collapsible-card" id="totalFormulaCard">
-            <!-- Dynamiczny wzór całkowity -->
-        </div>
+           <footer class="credits-footer">
+            <a href="https://youtube.com/shorts/-DSO4cc5f3E?si=_FtWhIW2DS666UpA" target="_blank" rel="noopener noreferrer" class="yt-credits-link">
+                <svg class="yt-icon" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                <span data-i18n="ytCredits">Oryginalny wzór na YouTube Shorts</span>
+            </a>
+        </footer>
     </div>
 
     <script src="script.js"></script>
