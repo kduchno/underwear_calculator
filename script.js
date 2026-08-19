@@ -490,25 +490,29 @@ function oblicz() {
     if (emergencyCard) {
         const riskFormula = buildRiskFormula(riskList);
         emergencyCard.innerHTML = `
-            <span class="formula-title">${getTranslation('formulas.emergencyTitle')}</span>
-            <span class="formula-line">${getTranslation('formulas.emergencyFormula')}</span>
-            ${getTranslation('formulas.mult')} <strong>${globalMultiplier.toFixed(2)}x</strong><br>
-            ${getTranslation('formulas.activeMeals')} <strong>${totalActiveMeals}</strong><br>
-            ${getTranslation('formulas.sumFailures')} <strong>${riskFormula} = ${totalExpectedFailures.toFixed(2)}</strong><br>
-            <span class="formula-line">${getTranslation('formulas.reserve')} ${totalExpectedFailures.toFixed(2)} → ${emergencyPairs}</span>
+            <div class="formula-container">
+                <span class="formula-title">${getTranslation('formulas.emergencyTitle')}</span>
+                <span class="formula-line">${getTranslation('formulas.emergencyFormula')}</span>
+                <span class="formula-line">${getTranslation('formulas.mult')} <strong>${globalMultiplier.toFixed(2)}x</strong></span>
+                <span class="formula-line">${getTranslation('formulas.activeMeals')} <strong>${totalActiveMeals}</strong></span>
+                <span class="formula-line">${getTranslation('formulas.sumFailures')} <strong>${riskFormula} = ${totalExpectedFailures.toFixed(2)}</strong></span>
+                <span class="formula-line">${getTranslation('formulas.reserve')} ${totalExpectedFailures.toFixed(2)} → ${emergencyPairs}</span>
+            </div>
         `;
     }
 
     const totalCard = document.getElementById('totalFormulaCard');
     if (totalCard) {
         totalCard.innerHTML = `
-            <span class="formula-title">${getTranslation('formulas.totalTitle')}</span>
-            <span class="formula-line">${getTranslation('formulas.totalFormula', { lives: totalLivesNeeded, perPair: livesPerPair, raw: rawTotal })}</span>
-            ${getTranslation('formulas.base')} <strong>${basePairs}</strong><br>
-            ${getTranslation('formulas.buffer')} <strong>${bufferPairs}</strong><br>
-            ${getTranslation('formulas.emergency')} <strong>+${emergencyPairs}</strong><br>
-            ${isRadiuszActive ? `${getTranslation('formulas.laundry')} <strong>−${appliedReduction}</strong><br>` : ''}
-            <span class="formula-line">${getTranslation('formulas.finalTotal')} ${total}</span>
+            <div class="formula-container">
+                <span class="formula-title">${getTranslation('formulas.totalTitle')}</span>
+                <span class="formula-line">${getTranslation('formulas.totalFormula', { lives: totalLivesNeeded, perPair: livesPerPair, raw: rawTotal })}</span>
+                <span class="formula-line">${getTranslation('formulas.base')} <strong>${basePairs}</strong></span>
+                <span class="formula-line">${getTranslation('formulas.buffer')} <strong>${bufferPairs}</strong></span>
+                <span class="formula-line">${getTranslation('formulas.emergency')} <strong>+${emergencyPairs}</strong></span>
+                ${isRadiuszActive ? `<span class="formula-line">${getTranslation('formulas.laundry')} <strong>−${appliedReduction}</strong></span>` : ''}
+                <span class="formula-line">${getTranslation('formulas.finalTotal')} ${total}</span>
+            </div>
         `;
     }
 
