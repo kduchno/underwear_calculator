@@ -1,0 +1,350 @@
+:root {
+    --bg-color: #F4F1EA;
+    --card-bg: #FFFFFF;
+    --text-color: #1A1611;
+    --text-muted: #666056;
+    --border-color: #E2DDD5;
+    --primary: #D9662B;
+    --primary-hover: #B8521D;
+    --success: #4B7B4E;
+    --danger: #B33A2E;
+    --accent: #F2C230;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 20px 10px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+header {
+    text-align: center;
+    padding: 10px 0;
+}
+
+h1 {
+    font-size: 1.8rem;
+    color: var(--text-color);
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.quote-box {
+    background: #EAE5DB;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-style: italic;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+}
+
+.btn-refresh {
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.highlight-card {
+    border-left: 4px solid var(--primary);
+}
+
+.grid-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.input-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+input[type="number"], select {
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: #FAFAFA;
+    width: 100%;
+    max-width: 100%;
+}
+
+.mode-selector {
+    display: flex;
+    gap: 8px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.mode-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.info-box {
+    background: #E8F0FE;
+    color: #1967D2;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+}
+
+.days-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.day-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.day-header {
+    background: #F0EDE6;
+    padding: 10px 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.meals-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px; /* Zabezpiecza układ na desktopie i wymusza scroll na bardzo małych ekranach */
+}
+
+.meals-table th, .meals-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.85rem;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.meals-table th {
+    background: #FAF8F5;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.underwear-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.underwear-icon-sm {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.underwear-icon-lg {
+    width: 60px;
+    height: 60px;
+}
+
+.safety-bar-container {
+    width: 100%;
+    height: 16px;
+    background: #E2DDD5;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.safety-bar {
+    height: 100%;
+    transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.safety-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-top: 6px;
+    text-align: right;
+}
+
+.result-card {
+    text-align: center;
+    background: #FAF8F5;
+}
+
+.main-result {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0;
+}
+
+.total-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-color);
+    line-height: 1;
+}
+
+.total-unit {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.result-breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    font-size: 0.85rem;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 12px;
+}
+
+.action-buttons {
+    margin-top: 16px;
+}
+
+.btn-pdf {
+    background: var(--success);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    max-width: 300px;
+}
+
+.modules-toggle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.sub-panel {
+    background: #FAFAFA;
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.laundry-session-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #EEE;
+}
+
+.remove-laundry-btn {
+    background: var(--danger);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.alert-warning {
+    background: #FFF3CD;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    margin-top: 8px;
+}
+
+.formula-title {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.formula-line {
+    font-family: monospace;
+    display: block;
+    color: var(--primary);
+    margin: 4px 0;
+}

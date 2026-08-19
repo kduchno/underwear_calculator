@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Sraczkowości i Pakowania Bielizny</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Biblioteka do generowania PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>💩 Taktyczny Kalkulator Bielizny</h1>
+            <p class="subtitle">Wskaźnik Sraczkowości i Dobrego Samopoczucia w Podróży</p>
+        </header>
+
+        <!-- Cytat dnia -->
+        <div class="quote-box">
+            <span id="quoteText">„Nie odkładaj na jutro tego, co możesz zesrać dzisiaj.”</span>
+            <button class="btn-refresh" onclick="drawQuote()">🎲 Losuj cytat</button>
+        </div>
+
+        <!-- Przełącznik trybów -->
+        <div class="mode-selector">
+            <button id="btnSimple" class="mode-btn active" onclick="setMode('simple')">⚡ Tryb Prosty</button>
+            <button id="btnAdvanced" class="mode-btn" onclick="setMode('advanced')">🛠️ Tryb Zaawansowany</button>
+        </div>
+
+        <!-- Główne Parametry Wyjazdu -->
+        <div class="card">
+            <h3>📅 Parametry Wyjazdu</h3>
+            <div class="grid-form">
+                <div class="input-group">
+                    <label for="totalDays">Liczba Dni Wyjazdu:</label>
+                    <input type="number" id="totalDays" value="3" min="1" max="30" onchange="renderDays()">
+                </div>
+                <div class="input-group">
+                    <label for="startHour">Godzina Wyjazdu (Dzień 1):</label>
+                    <input type="number" id="startHour" value="8" min="0" max="23" onchange="oblicz()">
+                </div>
+                <div class="input-group">
+                    <label for="endHour">Godzina Powrotu (Ostatni Dzień):</label>
+                    <input type="number" id="endHour" value="20" min="0" max="23" onchange="oblicz()">
+                </div>
+            </div>
+        </div>
+
+        <!-- NOWY MODUŁ: Błonnik i Alkohol -->
+        <div class="card highlight-card">
+            <h3>🌶️ Moduł Modyfikatorów Diety i Imprez</h3>
+            <div class="grid-form">
+                <div class="input-group">
+                    <label for="globalAlcohol">Spożycie Alkoholu / Imprezy:</label>
+                    <select id="globalAlcohol" onchange="oblicz()">
+                        <option value="0.0">Brak (Abstynencja)</option>
+                        <option value="0.15">Lekkie (1-2 Prowizoryczne Piwa)</option>
+                        <option value="0.35">Średnie (Drinki / Pasteryzacja)</option>
+                        <option value="0.60">Ciężkie (Ostre Imprezowanie + Kebab)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="globalFiber">Błonnik / Ostry Kebab / Stres:</label>
+                    <select id="globalFiber" onchange="oblicz()">
+                        <option value="0.0">Łagodnie (Dieta lekkostrawna)</option>
+                        <option value="0.20">Standard (Kuchnia regionalna)</option>
+                        <option value="0.40">Ostre (Piekielny SOS / Ostry Kebab)</option>
+                        <option value="0.70">Ekstremalne (Jelito Drażliwe Podróżnika)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informacja dla trybu prostego -->
+        <div id="simpleInfo" class="info-box">
+            ℹ️ W trybie prostym zakłada się 4 standardowe posiłki dziennie z domyślnym Ryzykiem Sraczkowości = 0.33.
+        </div>
+
+        <!-- Dni i Posiłki (Tryb Zaawansowany) -->
+        <div id="daysList" class="days-container" style="display: none;"></div>
+
+        <!-- Moduły Specjalne -->
+        <div class="card">
+            <h3>🧩 Moduły Specjalne (Licznik Aktywnych: <span id="activeModulesCount">0</span>)</h3>
+            <div class="modules-toggle-list">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="modRadiuszActive" onchange="toggleSpecialModule('radiusz')">
+                    <strong>Moduł Prania (Radiusz)</strong> – uwzględnia wypraną bieliznę w trakcie wyjazdu.
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="modLivesActive" onchange="toggleSpecialModule('lives')">
+                    <strong>Moduł Przeżywalności (Survival)</strong> – pozwala używać 1 pary przez kilkadziesiąt godzin.
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="modHeatActive" onchange="toggleSpecialModule('heat')">
+                    <strong>Moduł Upału / Wilgotności</strong> – wymusza 2 zmiany dziennie z powodu potu.
+                </label>
+            </div>
+
+            <!-- Panel Prania -->
+            <div id="panel-radiusz" class="sub-panel" style="display: none;">
+                <h4>🧼 Konfiguracja Sesji Prania</h4>
+                <div id="laundrySessionsContainer"></div>
+                <button type="button" class="btn-secondary" onclick="addLaundrySession()">+ Dodaj Sesję Prania</button>
+                <div id="laundryWarning" class="alert-warning" style="display: none;"></div>
+            </div>
+
+            <!-- Panel Żyć -->
+            <div id="panel-lives" class="sub-panel" style="display: none;">
+                <h4>🛡️ Parametry Przeżywalności Bielizny</h4>
+                <div class="input-group">
+                    <label for="underwearLives">Ile „żyć” / użyć ma jedna para?</label>
+                    <input type="number" id="underwearLives" value="2" min="1" max="5" onchange="oblicz()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Wskaźnik Deficytu / Bezpieczeństwa -->
+        <div class="card">
+            <h3>🛡️ Stan Ekwipunku i Poziom Bezpieczeństwa</h3>
+            <div class="safety-bar-container">
+                <div id="safetyIndicatorBar" class="safety-bar" style="width: 100%;"></div>
+            </div>
+            <p id="safetyIndicatorLabel" class="safety-label">Poziom Bezpieczeństwa: 100%</p>
+        </div>
+
+        <!-- Rynkowa Suma i Podsumowanie -->
+        <div class="card result-card">
+            <h2>📦 Wynik Pakowania</h2>
+            <div class="main-result">
+                <svg id="mainUnderwearSvg" class="underwear-icon-lg" viewBox="0 0 100 100">
+                    <path d="M15 30 C 35 28, 65 28, 85 30 C 80 55, 65 70, 58 72 L 42 72 C 35 70, 20 55, 15 30 Z" fill="#F2C230"/>
+                </svg>
+                <div class="result-display">
+                    <span id="resTotal" class="total-number">0</span>
+                    <span class="total-unit">PAR BELIZNY</span>
+                </div>
+            </div>
+
+            <div class="result-breakdown">
+                <div>Podstawa: <strong id="resBase">0</strong> par</div>
+                <div>Bufor wyjazdowy: <strong id="resBuffer">0</strong> par</div>
+                <div>Awarie (Sraczkowość): <strong id="resEmergency">0</strong> par</div>
+                <div id="resLivesLine" style="display:none;">Życia: <strong id="resLives">1</strong></div>
+                <div id="resHeatLine" style="display:none;">Upał: <strong id="resHeat">+0</strong></div>
+                <div id="resLaundryLine" style="display:none;">Pranie: <strong id="resLaundry">−0</strong></div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-pdf" onclick="generatePDF()">📄 Pobierz Checklistę PDF</button>
+            </div>
+        </div>
+
+        <!-- Rozwijane Karty Wzorów -->
+        <div class="card collapsible-card" id="emergencyFormulaCard">
+            <!-- Dynamiczny wzór rezerwy -->
+        </div>
+
+        <div class="card collapsible-card" id="totalFormulaCard">
+            <!-- Dynamiczny wzór całkowity -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
