@@ -345,6 +345,15 @@ input[type="number"], select {
     margin-bottom: 4px;
 }
 
+.formula-container {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .formula-line {
     font-family: monospace;
     display: inline-block;
