@@ -1,4 +1,4 @@
-:root {
+ :root {
     --bg-color: #F4F1EA;
     --card-bg: #FFFFFF;
     --text-color: #1A1611;
@@ -347,9 +347,11 @@ input[type="number"], select {
 
 .formula-line {
     font-family: monospace;
-    display: block;
+    display: inline-block;
     color: var(--primary);
-    margin: 4px 0;
+    margin: 4px 8px;
+    white-space: nowrap;
+    vertical-align: middle;
 }
 
 /* Wyśrodkowana stopka autorstwa */
