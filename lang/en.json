@@ -95,7 +95,7 @@
   },
   "formulas": {
     "emergencyTitle": "📐 Emergency Reserve Formula",
-    "emergencyFormula": "ceil( Σ Meals<sub>risk</sub> × Modifier Multiplier )",
+    "emergencyFormula": "ceil( Σ Meals × risk × Modifier Multiplier )",
     "mult": "Diet/Alcohol Multiplier:",
     "activeMeals": "Active meals:",
     "sumFailures": "Expected failures sum:",

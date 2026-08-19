@@ -1,4 +1,4 @@
- :root {
+:root {
     --bg-color: #F4F1EA;
     --card-bg: #FFFFFF;
     --text-color: #1A1611;
@@ -123,7 +123,8 @@ h1 {
     color: var(--text-muted);
 }
 
-input[type="number"], select {
+input[type="number"],
+select {
     padding: 8px 10px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -195,7 +196,8 @@ input[type="number"], select {
     min-width: 500px;
 }
 
-.meals-table th, .meals-table td {
+.meals-table th,
+.meals-table td {
     padding: 10px;
     border-bottom: 1px solid var(--border-color);
     font-size: 0.85rem;
@@ -339,31 +341,119 @@ input[type="number"], select {
     margin-top: 8px;
 }
 
-.formula-title {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 4px;
-}
+
+/* =========================================================
+   FORMUŁY
+   ========================================================= */
 
 .formula-container {
+    width: 100%;
+    min-width: 0;
+
     display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: 8px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    flex-direction: column;
+    justify-content: center;
+
+    gap: 6px;
+
+    overflow: hidden;
 }
 
-.formula-line {
-    font-family: monospace;
-    display: inline-block;
-    color: var(--primary);
-    margin: 4px 8px;
+.formula-title {
+    width: 100%;
+    min-width: 0;
+
+    font-size: 0.78rem;
+    line-height: 1.1;
+    font-weight: 700;
+
+    color: var(--text-muted);
+
     white-space: nowrap;
-    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* Wyśrodkowana stopka autorstwa */
+.formula-row {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    font-family: ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+    font-size: 0.78rem;
+    line-height: 1.25;
+
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.formula-main {
+    min-width: 0;
+    flex: 1 1 auto;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--primary);
+}
+
+.formula-item {
+    flex: 0 0 auto;
+
+    color: var(--text-muted);
+
+    white-space: nowrap;
+}
+
+.formula-value {
+    flex: 0 0 auto;
+
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+.formula-separator {
+    flex: 0 0 auto;
+
+    color: var(--border-color);
+
+    user-select: none;
+}
+
+.formula-result {
+    flex: 0 0 auto;
+
+    padding-left: 8px;
+
+    border-left: 1px solid var(--border-color);
+
+    color: var(--primary);
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+.formula-row.secondary {
+    font-size: 0.72rem;
+}
+
+
+/* =========================================================
+   STOPKA
+   ========================================================= */
+
 .credits-footer {
     text-align: center;
     margin-top: 10px;
@@ -393,4 +483,37 @@ input[type="number"], select {
     width: 16px;
     height: 16px;
     fill: currentColor;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+    body {
+        padding: 12px 8px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .formula-row {
+        gap: 5px;
+        font-size: 0.70rem;
+    }
+
+    .formula-row.secondary {
+        font-size: 0.65rem;
+    }
+
+    .formula-result {
+        padding-left: 6px;
+    }
+
+    .formula-title {
+        font-size: 0.72rem;
+    }
 }

@@ -107,7 +107,7 @@
   },
   "formulas": {
     "emergencyTitle": "📐 Wzór Rezerwy Awaryjnej",
-    "emergencyFormula": "ceil( Σ Posiłki<sub>ryzyko</sub> × Mnożnik Modyfikatorów )",
+    "emergencyFormula": "ceil( Σ Posiłki × ryzyko × Mnożnik Modyfikatorów )",
     "mult": "Mnożnik diety/alkoholu:",
     "activeMeals": "Aktywne posiłki:",
     "sumFailures": "Suma oczekiwanych awarii:",
