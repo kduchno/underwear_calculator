@@ -1,0 +1,108 @@
+/* ============================================
+   TRYB Z JAJEM — dodatki wizualne
+   Dołącz ten plik PO styles.css
+   ============================================ */
+
+.result-label {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 10px 0 16px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(242, 194, 48, 0.12);
+  border: 1px solid rgba(242, 194, 48, 0.35);
+  transition: all 0.3s ease;
+}
+
+.result-label.risk-low     { background: rgba(76, 175, 80, 0.12);  border-color: rgba(76, 175, 80, 0.4);  color: #4caf50; }
+.result-label.risk-mid     { background: rgba(242, 194, 48, 0.12); border-color: rgba(242, 194, 48, 0.4); color: #f2c230; }
+.result-label.risk-high    { background: rgba(230, 126, 34, 0.14); border-color: rgba(230, 126, 34, 0.45); color: #e67e22; }
+.result-label.risk-extreme { background: rgba(139, 69, 19, 0.18);  border-color: rgba(139, 69, 19, 0.5);  color: #c0752f; animation: pulse-warning 1.4s infinite; }
+
+@keyframes pulse-warning {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.03); }
+}
+
+.risk-bar-container {
+  width: 100%;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 11px;
+  overflow: hidden;
+  margin: 8px 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+}
+
+.risk-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 11px;
+  transition: width 0.6s ease, background 0.6s ease;
+  background: #4caf50;
+}
+
+.risk-bar-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.kebab-counter {
+  text-align: center;
+  font-size: 0.95rem;
+  margin: 4px 0 14px;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.kebab-counter strong {
+  font-size: 1.1rem;
+}
+
+.easter-egg-box {
+  text-align: center;
+  font-style: italic;
+  margin: 10px 0;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  animation: fade-in-egg 0.5s ease;
+}
+
+@keyframes fade-in-egg {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#emojiLayer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 9999;
+}
+
+.flying-emoji {
+  position: absolute;
+  bottom: -60px;
+  font-size: 2rem;
+  animation: fly-up 2.6s ease-in forwards;
+  opacity: 0.95;
+}
+
+@keyframes fly-up {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.95; }
+  85%  { opacity: 0.9; }
+  100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+}
